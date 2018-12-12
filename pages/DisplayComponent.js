@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { Component } from 'react'
+import { StyleSheet } from 'react-native'
 import {
   Container,
   Content,
@@ -9,9 +9,9 @@ import {
   Text,
   Button,
   Icon
-} from 'native-base';
-import { ListView } from 'react-native';
-import moment from 'moment';
+} from 'native-base'
+import { ListView } from 'react-native'
+import moment from 'moment'
 
 const db = require('./DatabaseComponent')
 
@@ -20,7 +20,6 @@ const formatTime = (time) => moment(time).format("HH:mm")
 
 let Restaurants = {
 }
-
 
 class DisplayComponent extends Component {
   constructor(props) {
@@ -48,7 +47,8 @@ async componentWillMount() {
 
   querySuccess = async (_, results) => {
     if (this.state.loading) {
-      this.setState({ kaynnit: results.rows._array});
+      this.setState({ kaynnit: results.rows._array.sort(function(a, b){
+        return new Date(a.date) - new Date(b.date)})}) // Järjestetään rivit päivämäärän mukaan
     }
     this.setState({
       loading: false
@@ -64,11 +64,10 @@ async componentWillMount() {
   }
 
   renderItem = kaynti => {
-    console.log(this.state.kaynnit)
     return (
       <ListItem 
-        onPress={(data) => console.log(Object.values(data))
-        }>
+        onPress={(data) => alert(data)}>
+        
         <Body>
           <Text note style={styles.centeredBold}>{formatDate(kaynti.date)}</Text>
           <Text></Text>
@@ -83,7 +82,6 @@ async componentWillMount() {
   }
 
   render() {
-    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     if (this.state.loading) {
       return <Expo.AppLoading />;
     }
@@ -101,7 +99,7 @@ async componentWillMount() {
       
       <Container style={styles.container}>
         <Content>
-          <List dataSource={this.ds.cloneWithRows(this.state.kaynnit)} renderRightHiddenRow={data => <Button danger full onPress={() => this.deleteRow(data)}><Icon active name="trash" /></Button>} leftOpenValue={75} rightOpenValue={-75} dataArray={this.state.kaynnit} renderRow={this.renderItem} />
+          <List dataSource={this.ds.cloneWithRows(this.state.kaynnit)} renderRightHiddenRow={data => <Button danger full onPress={() => this.deleteRow(data)}><Icon active name="trash"/></Button>} rightOpenValue={-75} dataArray={this.state.kaynnit} renderRow={this.renderItem} />
         </Content>
       </Container>
     );
@@ -119,7 +117,14 @@ const styles = StyleSheet.create({
   centeredBold: {
     fontWeight: "bold",
     textAlign: 'center',
-  }
+  },
+  image: {
+    flex: 1,
+    width: 150,
+    height: 150,
+    alignSelf: 'center',
+    marginTop: 10,
+  },
 });
 
 export default DisplayComponent;

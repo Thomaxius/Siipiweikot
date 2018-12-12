@@ -2,6 +2,7 @@ import React from 'react';
 import { Icon } from 'native-base';
 import AddComponent from '../pages/AddComponent';
 import DisplayComponent from '../pages/DisplayComponent';
+import StatisticsComponent from '../pages/StatisticsComponent';
 import { createDrawerNavigator } from 'react-navigation';
    
 const NaviSide = createDrawerNavigator(
@@ -17,7 +18,14 @@ const NaviSide = createDrawerNavigator(
       screen: DisplayComponent,
       navigationOptions: {
         drawerLabel: 'Näytä käynnit ',
-        drawerIcon: () => <Icon name="home" />,
+        drawerIcon: () => <Icon name="list" />,
+      },
+    },
+    StatisticsPage: {
+      screen: StatisticsComponent,
+      navigationOptions: {
+        drawerLabel: 'Tilastot',
+        drawerIcon: () => <Icon name="add" />,
       },
     },
   },

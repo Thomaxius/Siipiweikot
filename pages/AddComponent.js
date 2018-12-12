@@ -203,7 +203,15 @@ handleSubmit() {
     if (!this.state.value.restaurant) {
       alert("Valitse ravintola.")
       return
-    }            
+    }
+    console.log(moment(this.state.value.food_arrive_time).diff(moment(this.state.value.arrive_time), 'hours', true) < 0
+    )
+    console.log(moment(this.state.value.food_arrive_time).diff(moment(this.state.value.arrive_time), 'hours', true) > 0
+    )
+    if (moment(this.state.value.food_arrive_time).diff(moment(this.state.value.arrive_time), 'hours', true) < 0) {
+      alert("Ruuan saapumisaika ei voi olla ennen tilausaikaa.")
+      return
+    }
     db.addVisit(
           this.state.value.date,
           this.state.value.arrive_time,
