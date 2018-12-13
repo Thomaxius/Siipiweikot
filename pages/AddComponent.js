@@ -13,8 +13,15 @@ const db = require('./DatabaseComponent')
 const _ = require('lodash');
 
 const Meals = {
-  '1': 'Wings 10kpl X-hot',
-  '2': 'Party platter'
+  '1': 'Wings 6kpl X-hot',
+  '2': 'Wings 10kpl',
+  '3': 'Wings 16kpl',
+  '4': 'Wings 20kpl',
+  '5': 'Wings 25kpl',
+  '6': 'Wings 30kpl',
+  '7': 'Mini platter',
+  '8': 'Party platter',
+  '9': 'Nugetti-ateria'
 }
 
 
@@ -108,6 +115,7 @@ class ModalExample extends Component {
     return (
       <View>
         <View>
+        
           <Modal
             animationType="slide"
             transparent={true}
@@ -153,7 +161,7 @@ class ModalExample extends Component {
             this.setModalVisible(true);
           }}>
           <Text style={{marginLeft: "35%", color:"white"}}>Lisää kuva</Text>
-          {this.state.photo && <Icon name='checkmark-circle' iconStyle={{color: "white"}} />} 
+          {this.props.photo && <Icon name='checkmark-circle' iconStyle={{color: "white"}} />} 
           </Button>
       </View>
     );
@@ -204,10 +212,6 @@ handleSubmit() {
       alert("Valitse ravintola.")
       return
     }
-    console.log(moment(this.state.value.food_arrive_time).diff(moment(this.state.value.arrive_time), 'hours', true) < 0
-    )
-    console.log(moment(this.state.value.food_arrive_time).diff(moment(this.state.value.arrive_time), 'hours', true) > 0
-    )
     if (moment(this.state.value.food_arrive_time).diff(moment(this.state.value.arrive_time), 'hours', true) < 0) {
       alert("Ruuan saapumisaika ei voi olla ennen tilausaikaa.")
       return
@@ -226,14 +230,18 @@ handleSubmit() {
 
 async success() {
     alert("Käynti lisätty!")
-    this.setState({        value: {
-      date: null,
-      arrive_time: null,
-      food_arrive_time: null,
-      meal: '',
-      restaurant: '',
-      other_info: ''
-  },})
+    this.setState({        
+      value: 
+            {
+                  date: null,
+                  arrive_time: null,
+                  food_arrive_time: null,
+                  meal: '',
+                  restaurant: '',
+                  other_info: ''
+            },
+      photo: null
+    })
 }
 
  async populateRestaurants(_, results) { // Täytetään ylhäällä oleva restaurants-dicti tietokannasta haetuilla ravintoloilla
@@ -338,4 +346,4 @@ const styles = StyleSheet.create({
     backgroundColor: "#ff5f00",
     position: "relative"
   },
-});
+})

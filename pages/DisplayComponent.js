@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet } from 'react-native'
+import { Modal, StyleSheet, View, Image } from 'react-native'
 import {
   Container,
   Content,
@@ -21,13 +21,71 @@ const formatTime = (time) => moment(time).format("HH:mm")
 let Restaurants = {
 }
 
+class ModalExample extends Component {
+  state = {
+    modalVisible: false,
+  };
+
+  setModalVisible(visible) {
+    this.setState({modalVisible: visible});
+  }
+
+  render() {
+    return (
+      <View style={{marginTop: 22}}>
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            this.setModalVisible(!this.state.modalVisible)
+          }}>
+          <View style={{marginTop: 22}}>
+          <View style={(!this.props.photo ? {backgroundColor: '#fff', padding: 20,
+          width: 310,
+          height: 175} : {backgroundColor: '#fff', padding: 20,
+          width: 310,
+          height: 350})}>
+            <Body>
+            <Text note style={styles.centeredBold}>{formatDate(this.props.kaynti.date)}</Text>
+            <Text></Text>
+            <Text note>Aika: {formatTime(this.props.kaynti.arrive_time)}-{formatTime(this.props.kaynti.food_arrive_time)}</Text>
+            <Text note>Kesto: {moment(this.props.kaynti.food_arrive_time).diff(moment(this.props.kaynti.arrive_time), 'hours', true).toFixed(2)}h</Text>
+            <Text note>Ateria: {this.props.kaynti.meal}</Text>
+            <Text note>Ravintola: {Restaurants[this.props.kaynti.restaurantid]}</Text>
+            {!!this.props.kaynti.other_info && <Text note>Muuta: {this.props.kaynti.other_info}</Text>}
+            {!!this.props.kaynti.photo && <Image source={{ uri: this.props.kaynti.photo }} style={styles.image}   />}
+            {!!this.props.kaynti.photo && <Text>Tässä pitäis näkyä kuva.</Text>}
+          </Body>
+            </View>
+          </View>
+        </Modal>
+        <ListItem
+        onPress={() => this.setState({modalVisible:true})}>
+        <Body>
+          <Text note style={styles.centeredBold}>{formatDate(this.props.kaynti.date)}</Text>
+          <Text></Text>
+          <Text note>Aika: {formatTime(this.props.kaynti.arrive_time)}-{formatTime(this.props.kaynti.food_arrive_time)}</Text>
+          <Text note>Kesto: {moment(this.props.kaynti.food_arrive_time).diff(moment(this.props.kaynti.arrive_time), 'hours', true).toFixed(2)}h</Text>
+          <Text note>Ateria: {this.props.kaynti.meal}</Text>
+          <Text note>Ravintola: {Restaurants[this.props.kaynti.restaurantid]}</Text>
+          {!!this.props.kaynti.other_info && <Text note>Muuta: {this.props.kaynti.other_info}</Text>}
+        </Body>
+      </ListItem>
+      </View>
+    );
+  }
+}
+
+
 class DisplayComponent extends Component {
   constructor(props) {
     super(props)
     this.state = {
       kaynnit: [],
       loading: true,
-      basic: true
+      basic: true,
+      modalVisible: false,
     }
     this.populateRestaurants = this.populateRestaurants.bind(this)
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
@@ -57,27 +115,13 @@ async componentWillMount() {
 
   async deleteRow(data) {
     await db.deleteVisit(data.visitid)
-    let kaynnitCopy = [...this.state.kaynnit]
-    let index = kaynnitCopy.indexOf(data)
-    kaynnitCopy.splice(index, 1)
-    this.setState({kaynnit: kaynnitCopy} )
+    await db.getVisits(this.querySuccess)
+    this.setState({loading: true})
   }
 
   renderItem = kaynti => {
     return (
-      <ListItem 
-        onPress={(data) => alert(data)}>
-        
-        <Body>
-          <Text note style={styles.centeredBold}>{formatDate(kaynti.date)}</Text>
-          <Text></Text>
-          <Text note>Aika: {formatTime(kaynti.arrive_time)}-{formatTime(kaynti.food_arrive_time)}</Text>
-          <Text note>Kesto: {moment(kaynti.food_arrive_time).diff(moment(kaynti.arrive_time), 'hours', true).toFixed(2)}h</Text>
-          <Text note>Ateria: {kaynti.meal}</Text>
-          <Text note>Ravintola: {Restaurants[kaynti.restaurantid]}</Text>
-          {kaynti.other_info && <Text note>Muuta: {kaynti.other_info}</Text>}
-        </Body>
-      </ListItem>
+      <ModalExample kaynti={kaynti} />
     )
   }
 

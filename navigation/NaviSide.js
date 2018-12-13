@@ -1,10 +1,9 @@
 import React from 'react';
-import { Icon } from 'native-base';
+import { Icon, Button } from 'native-base';
 import AddComponent from '../pages/AddComponent';
 import DisplayComponent from '../pages/DisplayComponent';
 import StatisticsComponent from '../pages/StatisticsComponent';
 import { createDrawerNavigator } from 'react-navigation';
-   
 const NaviSide = createDrawerNavigator(
   {
     AddPage: {
@@ -39,7 +38,8 @@ const NaviSide = createDrawerNavigator(
       inactiveTintColor: 'gray',
       inactiveBackgroundColor: 'white',
     },
-  }
+  },
+
 );
 
 export default NaviSide;

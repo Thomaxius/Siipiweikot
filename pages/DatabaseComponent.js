@@ -55,20 +55,23 @@ const restaurants = {
 }
 
 const initialDb = async () => {
-    console.log('here')
+
     // Luodaan taulut
-    Object.keys(schemas).forEach((schemaName)=> {
+    Object.keys(schemas).forEach((schemaName) => {
         db.transaction(tx => {
         tx.executeSql(schemas[schemaName], null, console.log(`Schema ${schemaName} created`) , (tx, e) => error(tx, e, ("creating schema " + schemaName)))
     }) 
     })
     // Lisätään ravintolat
-    Object.keys(restaurants).forEach((key) => 
+    Object.keys(restaurants).forEach((key) => {
         db.transaction(tx => {
-        tx.executeSql('INSERT INTO restaurants (restaurantid, fullname, address, city)  VALUES (?, ?, ?, ?)', [key, restaurants[key].name, restaurants[key].address, restaurants[key].city], console.log(`Row ${restaurants[key].name}, ${restaurants[key].address}, ${restaurants[key].city} added`) , 
-        (tx, e) => error(tx, e, (`adding row ${key}, ${restaurants[key].name}, ${restaurants[key].address}, ${restaurants[key].city}`)))
-    }))   
+            tx.executeSql('INSERT INTO restaurants (restaurantid, fullname, address, city)  VALUES (?, ?, ?, ?)', [key, restaurants[key].name, restaurants[key].address, restaurants[key].city], console.log(`Row ${restaurants[key].name}, ${restaurants[key].address}, ${restaurants[key].city} added`) , 
+            (tx, e) => error(tx, e, (`adding row ${key}, ${restaurants[key].name}, ${restaurants[key].address}, ${restaurants[key].city}`)))
+        })
+    })
 }
+      
+
 
 const addVisit = async (date, arrive_time, food_arrive_time, meal, other_info, photo, restaurantid) => { // Pitää olla selekästi async, muuten createSchema(..) ajautuu ennen
         db.transaction(tx => {
@@ -121,22 +124,8 @@ const getRestaurants = async (callbackfunc) => {
             
     }
 
-const getVisits = async (callbackfunc) => {
-    db.transaction(tx => 
-        {tx.executeSql(
-                    `SELECT 
-                        * 
-                    FROM 
-                        visits
-                    `, 
-        null, 
-        callbackfunc, 
-        (tx, e) => error(tx, e, "getVisits"));
-    })
-        
-}
-
-
+    
+const getVisits = async (callbackfunc) => {db.transaction(tx => {tx.executeSql( `SELECT * FROM  visits `, null, callbackfunc, (tx, e) => error(tx, e, "getVisits"))})}
 
   module.exports = {
     getVisits,
